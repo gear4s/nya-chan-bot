@@ -34,26 +34,26 @@ class Cog(BaseCog, name="Tags"):
             return
 
         # Check if tag exists in database
+        tag_role = discord.utils.get(message.guild.roles, name=specified_tag)
+        if tag_role is None:
+            await message.channel.send(f'The tag **{specified_tag}** does not exist, {message.author.mention}.')
+            return
+
         with self.cursor_context() as cursor:
-            cursor.execute(*db_util.select("tags").items("name", "channel").limit(1)
-                           .where(id_server=message.guild.id, name=specified_tag).build)
+            db_util.select("selfassign_role").items("channel_id").limit(1).where(
+                server_id=message.guild.id, role_id=tag_role.id
+            ).run(cursor)
             row = cursor.fetchone()
 
         if not row:
-            await message.channel.send(
-                'The tag **{}** does not exist, {}.'.format(specified_tag, message.author.mention))
+            await message.channel.send(f'The tag **{specified_tag}** is not assignable, {message.author.mention}.')
             return
-
-        tag_name = row[0]
-        tag_role = discord.utils.get(message.guild.roles, name=tag_name)
-        if tag_role is None:
-            tag_role = await message.guild.create_role(name=tag_name, mentionable=False, reason="Tag creation")
 
         has_role = discord.utils.get(message.author.roles, id=tag_role.id) is not None
         msg_str = self.on_msg_dict[sign]
 
-        await message.channel.send(
-            '{} have the **{}** tag, {}.'.format(msg_str["pre"][has_role], tag_role.name, message.author.mention))
+        await message.channel.send('{msg_str["pre"][has_role]} have the **{tag_role.name}** tag, '
+                                   '{message.author.mention}.')
 
         if (has_role and sign == "-") or (not has_role and sign == "+"):
             callback = self.on_msg_dict["method"](message, has_role)
@@ -63,25 +63,24 @@ class Cog(BaseCog, name="Tags"):
         if ctx.invoked_subcommand.name != "list":
             tag = ctx.kwargs.get("tag")
 
+            tag_role = discord.utils.get(ctx.guild.roles, name=tag)
+            if tag_role is None:
+                await ctx.reply(f'The tag **{tag}** does not exist.')
+                raise ThrowawayException
+
             # Check if tag exists in database
             with self.cursor_context() as cursor:
-                cursor.execute(*db_util.select("tags").items("name", "channel").limit(1)
-                               .where(id_server=ctx.guild.id, name=tag).build)
+                db_util.select("selfassign_role").items("channel_id").limit(1).where(
+                    server_id=ctx.guild.id, role_id=tag_role.id
+                ).run(cursor)
                 row = cursor.fetchone()
 
             if not row:
-                await ctx.reply('The tag "{}" does not exist'.format(tag))
+                await ctx.reply(f'The tag **{tag}** is not assignable.')
                 raise ThrowawayException
 
-            tag_name = row[0]
-            channel_id = row[1]
-
-            # Check if the role associated with the tag exists, if not, create it
-            tag_role = discord.utils.get(ctx.guild.roles, name=tag_name)
-            if tag_role is None:
-                tag_role = await ctx.guild.create_role(name=tag_name, mentionable=True, reason="Tag creation")
-
             # Get the linked channel if applicable
+            channel_id = row[0]
             channel = self.bot.get_channel(channel_id) if channel_id else None
 
             # Check if the author already has tag_role
@@ -101,14 +100,14 @@ class Cog(BaseCog, name="Tags"):
     async def add(self, ctx, *, tag: str):
         """Identify yourself with a tag."""
         if ctx.custom.has_role:
-            await ctx.reply('You already have the tag "{}"'.format(tag))
+            await ctx.reply(f'You already have the tag "{tag}"')
             return
 
         await ctx.author.add_roles(ctx.custom.tag_role)
 
-        msg = 'You now have the tag "{}"'.format(tag)
+        msg = f'You now have the tag "{tag}"'
         if ctx.custom.linked_channel is not None:
-            msg += '. You can now see the channel {}'.format(ctx.custom.linked_channel.mention)
+            msg += f'. You can now see the channel {ctx.custom.linked_channel.mention}'
 
         await ctx.reply(msg)
 
@@ -117,7 +116,7 @@ class Cog(BaseCog, name="Tags"):
     async def remove(self, ctx, *, tag: str):
         """Removes a tag."""
         if not ctx.custom.has_role:
-            await ctx.reply('You don\'t have the tag "{}"'.format(tag))
+            await ctx.reply(f'You don\'t have the tag "{tag}"')
             return
 
         await ctx.author.remove_roles(ctx.custom.tag_role)
@@ -133,8 +132,11 @@ class Cog(BaseCog, name="Tags"):
     async def list(self, ctx):
         """Lists the available tags"""
         with self.cursor_context() as cursor:
-            cursor.execute(*db_util.select("tags").items("name", "description", "channel")
-                           .order(">name").where(id_server=ctx.guild.id).build)
+            db_util.select("selfassign_role").items(
+                "role_id", "channel_id", "description"
+            ).where(
+                server_id=ctx.guild.id
+            ).run(cursor)
             rows = cursor.fetchall()
 
         embed = discord.Embed(title="List of the available tags", type="rich",
@@ -144,13 +146,17 @@ class Cog(BaseCog, name="Tags"):
                                           "```\nExample: -Gamer```\n**These commands only work in #bot-commands **\n\n"
                                           "Role list:")
         for row in rows:
-            value = row[1]
+            role_id = row[0]
+            chan_id = row[1]
+            desc = row[2]
 
-            channel = self.bot.get_channel(row[2]) if row[2] else None
+            channel = self.bot.get_channel(chan_id) if chan_id else None
             if channel is not None:
-                value += f' (Make {channel.mention} visible)'
+                desc += f' (Make {channel.mention} visible)'
 
-            embed.add_field(name=row[0], value=value, inline=False)
+            tag_role = discord.utils.get(ctx.guild.roles, id=role_id)
+            if tag_role:
+                embed.add_field(name=tag_role.name, value=desc, inline=False)
 
         if not embed.fields:
             embed.add_field(name="None defined", value="No roles have been defined for self-assignment")
