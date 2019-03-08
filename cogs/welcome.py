@@ -9,15 +9,10 @@ class Cog(BaseCog, name="Welcome"):
     """Welcomes new members to the server via private message"""
     def get_message(self, guild):
         with self.cursor_context() as cursor:
-            res = cursor.execute(*db_util.select("welcomes", items="message").where(id_server=guild.id).build)
-            if not res:
-                cursor.execute(*db_util.insert("welcomes").items(id_server=guild.id, message="").build)
-                return None
-
+            db_util.select("server_base_config").items("welcome_message").where(server_id=guild.id).run(cursor)
             row = cursor.fetchone()
 
-        text = row[0]
-        return text
+        return row[0] if row else None
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
