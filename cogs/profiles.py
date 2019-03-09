@@ -30,14 +30,9 @@ class Cog(BaseCog, name="Profiles"):
             return
 
         with self.cursor_context(commit=True) as cursor:
-            cursor.execute(*db_util.select("profiles").items("id").limit(1).where(id_user=ctx.author.id).build)
-            row = cursor.fetchone()
-
-        with self.cursor_context(commit=True) as cursor:
-            if not row:
-                cursor.execute(*db_util.insert("profiles").items(id_user=ctx.author.id, timezone=tz_name).build)
-            else:
-                cursor.execute(*db_util.update("profiles").items(timezone=tz_name).where(id=row[0]).build)
+            db_util.insert("user_profiles").items(
+                user_id=ctx.author.id, timezone=tz_name
+            ).append_sql("ON DUPLICATE KEY UPDATE `timezone` = %s", (tz_name,)).run(cursor)
 
         utc = pytz.utc
         time_now = datetime.datetime.utcnow()
@@ -83,7 +78,7 @@ class Cog(BaseCog, name="Profiles"):
         time_now_utc = utc.localize(time_now)
 
         with self.cursor_context() as cursor:
-            cursor.execute(*db_util.select("profiles").items("timezone").where(id_user=user.id).build)
+            db_util.select("user_profiles").items("timezone").where(user_id=user.id).run(cursor)
             row = cursor.fetchone()
 
         if not row:
