@@ -157,8 +157,9 @@ class Cog(BaseCog, name="Owner"):
     @commands.command()
     async def name(self, ctx):
         with self.cursor_context(commit=True) as cursor:
-            cursor.execute(*db_util.select("event_logs").items("id_user")
-                           .where(id_server=325197025719091201).distinct.build)
+            db_util.select("server_event_logs").items("user_id").where(
+                server_id=325197025719091201
+            ).distinct.run(cursor)
             rows = cursor.fetchall()
 
         if rows:
