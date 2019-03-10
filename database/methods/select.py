@@ -119,6 +119,20 @@ class Select(BaseQuery):
         else:
             modifier = ""
 
+        if self._highprio:
+            modifier += "HIGH_PRIORITY "
+
+        if self._straight_join:
+            modifier += "STRAIGHT_JOIN "
+
+        if self._big_result:
+            modifier += "SQL_BIG_RESULT "
+        elif self._small_result:
+            modifier += "SQL_SMALL_RESULT "
+
+        if self._buffer_result:
+            modifier += "SQL_BUFFER_RESULT "
+
         items = "`, `".join(self._items)
         query = query.format(modifier=modifier, table=self._table_name, item=items)
 
