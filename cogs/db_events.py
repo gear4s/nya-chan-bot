@@ -34,7 +34,7 @@ class Cog(BaseCog, name="DBEvent"):
                     db_util.insert("server_user_stats").items(
                         server_id=guild.id, channel_id=channel.id,
                         user_id=author.id, msg_count=1
-                    ).append_sql("ON DUPLICATE KEY UPDATE msg_count = msg_count + 1").run(cursor)
+                    ).or_update(msg_count=DBFunction("msg_count + 1")).run(cursor)
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
