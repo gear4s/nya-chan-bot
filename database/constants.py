@@ -1,6 +1,6 @@
 class Constants:
     class Templates:
-        SELECT = "SELECT {distinct}`{item}` FROM `{table}`"
+        SELECT = "SELECT {modifier}`{item}` FROM `{table}`"
         INSERT = "INSERT INTO `{table}` ({items}) VALUES ({values})"
         UPDATE = "UPDATE `{table}` SET {items}"
         DELETE = "DELETE FROM `{table}`"
