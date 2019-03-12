@@ -63,20 +63,11 @@ CREATE TABLE `tags` (
   `tag_owner_id` bigint(18) NOT NULL,
   `tag_name` varchar(48) NOT NULL,
   `tag_description` text NOT NULL,
-  `tag_created` datetime DEFAULT NULL,
+  `tag_created` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`server_id`,`tag_name`),
   KEY `tag_server_id_idx` (`server_id`),
   CONSTRAINT `tag_server_id` FOREIGN KEY (`server_id`) REFERENCES `server_list` (`server_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='This table will hold replies for preset tag words. Use in discord will be `<server_prefix>tag <tag_name>` and will return `tag_description`';
-
-DELIMITER ;;
-CREATE TRIGGER `tags_BEFORE_INSERT` BEFORE INSERT ON `tags` FOR EACH ROW BEGIN
-  IF new.tag_created IS NULL
-  THEN
-    SET new.tag_created = now();
-  END IF;
-END;;
-DELIMITER ;
 
 --
 -- Table structure for table `user_profiles`
@@ -91,4 +82,34 @@ CREATE TABLE `user_profiles` (
   UNIQUE KEY `user_id_UNIQUE` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dump completed on 2019-03-08 19:55:46
+--
+-- Table structure for table `giveaway`
+--
+
+DROP TABLE IF EXISTS `giveaway`;
+SET character_set_client = utf8mb4 ;
+CREATE TABLE `giveaway` (
+  `giveaway_id` int(11) NOT NULL AUTO_INCREMENT,
+  `server_id` bigint(18) NOT NULL,
+  `giveaway_name` varchar(100) NOT NULL,
+  PRIMARY KEY (`giveaway_id`),
+  UNIQUE KEY `giveaway_id_UNIQUE` (`giveaway_id`),
+  KEY `giveaway_server_id_idx` (`server_id`),
+  CONSTRAINT `giveaway_server_id` FOREIGN KEY (`server_id`) REFERENCES `server_list` (`server_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Table structure for table `giveaway_roles`
+--
+
+DROP TABLE IF EXISTS `giveaway_roles`;
+SET character_set_client = utf8mb4 ;
+CREATE TABLE `giveaway_roles` (
+  `giveaway_id` int(11) NOT NULL,
+  `role_id` bigint(18) NOT NULL,
+  KEY `giveaway_roles_id_idx` (`giveaway_id`),
+  CONSTRAINT `giveaway_roles_id` FOREIGN KEY (`giveaway_id`) REFERENCES `giveaway` (`giveaway_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Dump completed on 2019-03-12 21:10:25
+
