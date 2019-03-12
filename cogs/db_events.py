@@ -57,7 +57,7 @@ class Cog(BaseCog, name="DBEvent"):
         with self.cursor_context(commit=True) as cursor:
             db_util.insert("server_event_logs").items(
                 server_id=member.guild.id, user_id=member.id,
-                date_utc=DBFunction("NOW()"), event_type="left"
+                event_type="left"
             ).run(cursor)
 
             update = db_util.update("server_list").where(
