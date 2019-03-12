@@ -12,7 +12,7 @@ class Cog(BaseCog, name="DBEvent"):
             member_count = len(guild.members)
             humans = member_count - len([m for m in guild.members if m.bot])
             db_util.insert("server_list").items(
-                server_id=guild.id, name=guild.name, members=member_count,
+                server_id=guild.id, name=guild.name,
                 human_members=humans, bot_members=member_count - humans
             ).run(cursor)
 

@@ -58,7 +58,7 @@ SET character_set_client = utf8mb4 ;
 CREATE TABLE `server_list` (
   `server_id` bigint(18) NOT NULL,
   `name` char(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `members` int(4) NOT NULL,
+  `members` int(4) GENERATED ALWAYS AS ((`human_members` + `bot_members`)) STORED,
   `human_members` int(4) NOT NULL,
   `bot_members` int(4) NOT NULL,
   PRIMARY KEY (`server_id`),
