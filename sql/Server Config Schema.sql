@@ -34,6 +34,7 @@ CREATE TABLE `server_cogs_disabled` (
   KEY `cogs_disabled_server_id_idx` (`server_id`),
   CONSTRAINT `cogs_disabled_server_id` FOREIGN KEY (`server_id`) REFERENCES `server_list` (`server_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 --
 -- Table structure for table `server_event_logs`
 --
@@ -79,6 +80,6 @@ CREATE TABLE `server_user_stats` (
   PRIMARY KEY (`server_id`,`channel_id`,`user_id`),
   KEY `stats_server_id_idx` (`server_id`),
   CONSTRAINT `stats_server_id` FOREIGN KEY (`server_id`) REFERENCES `server_list` (`server_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8mb4_unicode_ci;
 
 -- Dump completed on 2019-03-08 19:52:48

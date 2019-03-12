@@ -21,7 +21,11 @@ CREATE TABLE `qna` (
   KEY `qna_stream_id_idx` (`stream_id`),
   CONSTRAINT `qna_server_id` FOREIGN KEY (`server_id`) REFERENCES `server_list` (`server_id`),
   CONSTRAINT `qna_stream_id` FOREIGN KEY (`stream_id`) REFERENCES `stream_schedule` (`stream_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Table structure for table `selfassign_role`
+--
 
 DROP TABLE IF EXISTS `selfassign_role`;
 SET character_set_client = utf8mb4 ;
@@ -33,7 +37,7 @@ CREATE TABLE `selfassign_role` (
   PRIMARY KEY (`server_id`,`role_id`),
   KEY `id_idx` (`server_id`),
   CONSTRAINT `id` FOREIGN KEY (`server_id`) REFERENCES `server_list` (`server_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Table structure for table `stream_schedule`
@@ -50,7 +54,7 @@ CREATE TABLE `stream_schedule` (
   UNIQUE KEY `id_UNIQUE` (`stream_id`),
   KEY `id_idx` (`server_id`),
   CONSTRAINT `server_stream_id` FOREIGN KEY (`server_id`) REFERENCES `server_list` (`server_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Table structure for table `tags`
@@ -80,7 +84,7 @@ CREATE TABLE `user_profiles` (
   `timezone` varchar(50) NOT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `user_id_UNIQUE` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Table structure for table `giveaway`
@@ -96,7 +100,7 @@ CREATE TABLE `giveaway` (
   UNIQUE KEY `giveaway_id_UNIQUE` (`giveaway_id`),
   KEY `giveaway_server_id_idx` (`server_id`),
   CONSTRAINT `giveaway_server_id` FOREIGN KEY (`server_id`) REFERENCES `server_list` (`server_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Table structure for table `giveaway_roles`
