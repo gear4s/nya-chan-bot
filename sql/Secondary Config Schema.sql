@@ -15,8 +15,9 @@ SET character_set_client = utf8mb4 ;
 CREATE TABLE `qna` (
   `server_id` bigint(18) NOT NULL,
   `stream_id` int(10) NOT NULL,
-  `question_id` bigint(18) NOT NULL,
-  `timestamp` char(8) NOT NULL,
+  `timestamp` datetime NOT NULL,
+  `author` varchar(8) NOT NULL,
+  `question` mediumtext NOT NULL,
   PRIMARY KEY (`server_id`,`stream_id`),
   KEY `qna_stream_id_idx` (`stream_id`),
   CONSTRAINT `qna_server_id` FOREIGN KEY (`server_id`) REFERENCES `server_list` (`server_id`),

@@ -78,13 +78,14 @@ class Cog(BaseCog, name="Ask me anything"):
         saved = []
         with self.cursor_context() as cursor:
             # Get the last stream ID
-            res = cursor.execute(*db_util.select("streams", "id").limit(1)
-                                 .where(id_server=ctx.guild.id).order(date="desc").build)
-            if not res:
+            db_util.select("stream_schedule").items("stream_id").limit(1).where(
+                server_id=ctx.guild.id
+            ).order(date="desc").run(cursor)
+            row = cursor.fetchone()
+
+            if not row:
                 await ctx.reply('No streams have been found !')
                 return
-
-            row = cursor.fetchone()
 
         stream_id = row[0]
         destination = self.bot.get_channel(self.config.bot.channel.ama_destination)
@@ -115,13 +116,13 @@ class Cog(BaseCog, name="Ask me anything"):
                 q_content = question_details[1]
                 q_author = question_infos[0].replace('From ', '')
                 q_date = datetime.strptime(question_infos[1].replace(' UTC', ''), '%c')
-                q_timestamp = '' if timestamp is None else timestamp
+                q_timestamp = 'NULL' if timestamp is None else timestamp
 
                 with self.cursor_context(commit=True) as cursor:
-                    cursor.execute(*db_util.insert("questions")
-                                   .items(id_server=ctx.guild.id, id_stream=stream_id, author=q_author,
-                                          datetime=q_date.strftime('%Y-%m-%d %H:%M:%S'), question=q_content,
-                                          timestamp=q_timestamp))
+                    db_util.insert("questions").items(
+                        server_id=ctx.guild.id, stream_id=stream_id, datetime=q_date.strftime('%Y-%m-%d %H:%M:%S'),
+                        timestamp=q_timestamp, author=q_author, question=q_content
+                    ).run(cursor)
 
         if saved:
             for msg in saved:
