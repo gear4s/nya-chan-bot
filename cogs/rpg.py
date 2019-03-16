@@ -16,8 +16,3 @@ class Cog(BaseCog, name="RPG"):
             result = [random.randint(1, limit) for _ in range(rolls)]
             msg = "```Results for {} : {} (Total : {})```".format(dice, ', '.join(str(x) for x in result), sum(result))
             await ctx.reply(msg)
-
-
-def setup(bot):
-    cog = RPG(bot)
-    bot.add_cog(cog)
