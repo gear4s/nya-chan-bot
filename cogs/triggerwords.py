@@ -60,11 +60,11 @@ class Cog(BaseCog, name="Trigger words"):
         await self.no_invoke_help(ctx)
 
     @trigger.command()
-    async def add(self, ctx):
+    async def add(self, ctx, trigger_re):
         pass
 
     @trigger.command()
-    async def remove(self, ctx):
+    async def remove(self, ctx, trigger_id):
         pass
 
     @trigger.command()
