@@ -2,8 +2,6 @@
 import discord
 from discord.ext import commands
 from nyalib.NyaBot import NyaBot, ThrowawayException
-import sys
-import traceback
 import re
 import os
 
@@ -40,7 +38,10 @@ async def on_command_error(ctx, error):
         msg = msg_list.get(error.__class__, "{msg.author}, error```py\n{errn}: {errs}\n```")
         msg = msg.format(msg=ctx.message, err=error, errn=type(error).__name__, errs=str(error))
         if error.__class__ not in (commands.UserInputError, commands.NoPrivateMessage):
-            await ctx.author.send(msg)
+            try:
+                await ctx.author.send(msg)
+            except discord.Forbidden:
+                await ctx.reply(msg)
             if os.getenv("DEBUG"):
                 raise error
         else:
@@ -61,7 +62,7 @@ async def on_command_completion(ctx):
 
 
 @bot.event
-async def on_error(_, msg):
+async def on_error(name, context, _):
     if not os.getenv("DEBUG"):
         return
 
@@ -73,9 +74,9 @@ class MainDriver:
         self.bot = bot
         for cog in self.bot.config.bot.cogs:
             try:
-                self.bot.load_extension('cogs.' + cog)
-            except (AttributeError, ImportError) as e:
-                print("Failed to load cog: {} due to {}".format(cog, str(e)))
+                self.bot.load_extension(('cogs.' if cog["in_cogs"] else "") + cog["file"])
+            except (commands.ExtensionFailed, commands.ExtensionError, commands.ExtensionNotFound) as e:
+                print(f"Failed to load cog: {cog['file']} due to {e}")
 
     def run(self):
         token = self.bot.config.bot.token
