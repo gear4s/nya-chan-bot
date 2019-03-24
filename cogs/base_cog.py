@@ -1,5 +1,6 @@
 from discord.ext import commands
 import contextlib
+import inspect
 
 
 class BaseCog(commands.Cog):
@@ -7,6 +8,11 @@ class BaseCog(commands.Cog):
         self.bot = bot
         self.config = self.bot.config
         # TODO: add logger here.
+        if hasattr(self, "cog_init"):
+            if inspect.isawaitable(self.cog_init):
+                bot.loop.run_until_complete(self.cog_init)
+            else:
+                self.cog_init()
 
     @contextlib.contextmanager
     def cursor_context(self, commit=False):
