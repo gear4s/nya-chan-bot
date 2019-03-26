@@ -52,8 +52,8 @@ class Cog(BaseCog, name="Tags"):
         has_role = discord.utils.get(message.author.roles, id=tag_role.id) is not None
         msg_str = self.on_msg_dict[sign]
 
-        await message.channel.send('{msg_str["pre"][has_role]} have the **{tag_role.name}** tag, '
-                                   '{message.author.mention}.')
+        await message.channel.send(f'{msg_str["pre"][has_role]} have the **{tag_role.name}** tag, '
+                                   f'{message.author.mention}.')
 
         if (has_role and sign == "-") or (not has_role and sign == "+"):
             callback = self.on_msg_dict["method"](message, has_role)
