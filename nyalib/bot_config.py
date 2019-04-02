@@ -63,13 +63,15 @@ class BotConfig(object):
 
             return cogs
 
-        if 'owner' not in cogs and os.path.isfile(os.path.join("cogs", "owner")):
+        if 'owner' not in cogs and os.path.isfile(os.path.join("cogs", "owner.py")):
             # Append owner cog
             cogs.append('owner')
 
         if os.getenv("DEBUG") and "jishaku" not in cogs:
             # Append testing cog
             cogs.append("jishaku")
+        elif not os.getenv("DEBUG") and "jishaku" in cogs:
+            cogs.remove("jishaku")
 
         return [
             {"file": f.replace('.py', ''), "in_cogs": os.path.isfile(os.path.join("cogs", f"{f}.py"))}
