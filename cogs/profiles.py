@@ -6,7 +6,7 @@ import pytz
 from database import Methods as db_util
 
 
-class Cog(BaseCog, name="Profiles"):
+class setup(BaseCog, name="Profiles"):
     """Let users have a more detailed profile. (including timezone !)"""
     @commands.group(invoke_without_command=True)
     async def p(self, ctx):

@@ -6,12 +6,11 @@ from types import SimpleNamespace
 from .base_cog import BaseCog
 
 
-class Cog(BaseCog, name="Trigger words"):
+class setup(BaseCog, name="Trigger words"):
     """
     Trigger responses from certain regular expression triggers.
     """
-    def __init__(self, bot):
-        super().__init__(bot)
+    def __init__(self):
         self.triggers = None
 
     @commands.Cog.listener()

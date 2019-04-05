@@ -6,9 +6,8 @@ from types import SimpleNamespace
 import functools
 
 
-class Cog(BaseCog, name="Moderation"):
-    def __init__(self, bot):
-        super().__init__(bot)
+class setup(BaseCog, name="Moderation"):
+    def __init__(self):
         self._set_mod = SetMod("Mod", "mod", "trainee")
         self._set_trainee = SetMod("Mod Trainee", "trainee", "mod")
         self.roles = {

@@ -5,7 +5,7 @@ from cogs.base_cog import BaseCog
 from database import Methods as db_util
 
 
-class Cog(BaseCog, name="Ask me anything"):
+class setup(BaseCog, name="Ask me anything"):
     @commands.group(invoke_without_command=True)
     async def qna(self, ctx):
         """Ask me Anything commands."""

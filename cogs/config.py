@@ -3,7 +3,7 @@ from discord.ext import commands
 from .base_cog import BaseCog
 
 
-class Cog(BaseCog, name="Configuration"):
+class setup(BaseCog, name="Configuration"):
     @commands.Cog.listener()
     async def on_ready(self):
         pass

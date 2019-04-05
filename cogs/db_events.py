@@ -5,7 +5,7 @@ from database import Methods as db_util
 from database import DBFunction
 
 
-class Cog(BaseCog, name="DBEvent"):
+class setup(BaseCog, name="DBEvent"):
     @commands.Cog.listener()
     async def on_guild_join(self, guild: discord.Guild):
         with self.cursor_context(commit=True) as cursor:

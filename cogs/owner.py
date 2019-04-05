@@ -9,7 +9,7 @@ from cogs.base_cog import BaseCog
 from database import Methods as db_util
 
 
-class Cog(BaseCog, name="Owner"):
+class setup(BaseCog, name="Owner"):
     @commands.group(invoke_without_command=True)
     async def git(self, ctx):
         """Git commands."""

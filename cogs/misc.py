@@ -3,7 +3,7 @@ import datetime
 from cogs.base_cog import BaseCog
 
 
-class Cog(BaseCog, name="Misc"):
+class setup(BaseCog, name="Misc"):
     @commands.command(description='Pat Nya Chan.')
     @commands.guild_only()
     async def pat(self, ctx, location: str = 'head'):

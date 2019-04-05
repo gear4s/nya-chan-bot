@@ -3,7 +3,7 @@ from discord.ext import commands
 from cogs.base_cog import BaseCog
 
 
-class Cog(BaseCog, name="Games"):
+class setup(BaseCog, name="Games"):
     @commands.command(description='Identify yourself as looking for a game (toggle command).')
     @commands.guild_only()
     async def lfg(self, ctx):

@@ -5,9 +5,8 @@ from nyalib.NyaBot import ThrowawayException
 from database import Methods as db_util
 
 
-class Cog(BaseCog, name="Tags"):
-    def __init__(self, bot):
-        super().__init__(bot)
+class setup(BaseCog, name="Tags"):
+    def __init__(self):
         self.on_msg_dict = {
             "+": {
                 "pre": {

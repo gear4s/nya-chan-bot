@@ -6,7 +6,7 @@ if not discord.opus.is_loaded():
     discord.opus.load_opus('opus')
 
 
-class Cog(BaseCog, name="Music"):
+class setup(BaseCog, name="Music"):
     @commands.command(description='Add youtube video to the queue and start playing')
     @commands.guild_only()
     async def play(self, ctx):

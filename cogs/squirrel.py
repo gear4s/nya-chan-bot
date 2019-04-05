@@ -4,7 +4,7 @@ from cogs.base_cog import BaseCog
 from nyalib.NyaBot import ThrowawayException
 
 
-class Cog(BaseCog, name="Squirrel"):
+class setup(BaseCog, name="Squirrel"):
     async def cog_before_invoke(self, ctx):
         if ctx.invoked_subcommand is not None:
             squirrel_role = discord.utils.get(ctx.guild.roles, id=329409494478094336)

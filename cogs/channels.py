@@ -3,7 +3,7 @@ from discord.ext import commands
 from cogs.base_cog import BaseCog
 
 
-class Cog(BaseCog, name="Channel"):
+class setup(BaseCog, name="Channel"):
     @commands.group(invoke_without_command=True)
     async def channel(self, ctx):
         """Text Channel edition commands."""

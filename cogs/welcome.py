@@ -5,7 +5,7 @@ from cogs.base_cog import BaseCog
 from database import Methods as db_util
 
 
-class Cog(BaseCog, name="Welcome"):
+class setup(BaseCog, name="Welcome"):
     """Welcomes new members to the server via private message"""
     def get_message(self, guild):
         with self.cursor_context() as cursor:

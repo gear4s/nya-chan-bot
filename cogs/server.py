@@ -3,7 +3,7 @@ import distro, subprocess
 from cogs.base_cog import BaseCog
 
 
-class Cog(BaseCog, name="Server"):
+class setup(BaseCog, name="Server"):
     @commands.command(description='Pat Nya Chan.')
     @commands.has_any_role('Nixie', 'Supervisors', 'Moderators')
     @commands.guild_only()

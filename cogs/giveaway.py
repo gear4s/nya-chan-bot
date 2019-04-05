@@ -6,7 +6,7 @@ from cogs.base_cog import BaseCog
 import random
 
 
-class Cog(BaseCog, name="Giveaway"):
+class setup(BaseCog, name="Giveaway"):
     giveaways = {}
 
     async def cog_before_invoke(self, ctx):

@@ -4,7 +4,7 @@ import discord
 import time
 
 
-class Cog(BaseCog, name="Customs"):
+class setup(BaseCog, name="Customs"):
     """Welcomes new members to the server via private message"""
     @commands.command(description='Sends a custom message.')
     @commands.guild_only()
