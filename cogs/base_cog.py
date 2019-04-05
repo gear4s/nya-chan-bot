@@ -17,6 +17,7 @@ class BaseCogMeta(commands.CogMeta):
                 cls.bot = bot
                 cls.config = bot.config
                 cls.__cog__init__(self)
+                bot.add_cog(self)
 
         cls.__cog__init__ = cls.__init__
         cls.__init__ = custom_init
