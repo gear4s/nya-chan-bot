@@ -1,36 +1,23 @@
 import discord
 from discord.ext import commands
+from types import SimpleNamespace
 
 
-class CustomContextCustomItem:
-    def __init__(self, **kwargs):
-        self.name = kwargs.pop("name", None)
-        self.value = kwargs.pop("value", None)
-
-
-class CustomContextCustomItems:
-    def __init__(self):
-        self.custom_items = []
-
-    def get_item(self, item_name):
-        return discord.utils.get(self.custom_items, name=item_name)
-
+class CustomContextCustomItems(SimpleNamespace):
     def __getitem__(self, item_name):
-        item = self.get_item(item_name)
-        return item.value if item else None
+        return self.__getitem__(item_name)
 
     # Only allow getting for attribute name, not setting
     def __getattr__(self, item_name):
-        item = self.get_item(item_name)
-        return item.value if item else None
-
-    def __setitem__(self, item_name, item_value):
-        item = discord.utils.get(self.custom_items, name=item_name)
+        item = self.__dict__.get(item_name, None)
         if not item:
-            custom_item_instance = CustomContextCustomItem(name=item_name, value=item_value)
-            self.custom_items.append(custom_item_instance)
-        else:
-            item.value = item_value
+            raise AttributeError
+        return item
+
+    def __setitem__(self, key, value):
+        self.__dict__[key] = value
+
+    __setattr__ = None
 
 
 class CustomContextReply:
